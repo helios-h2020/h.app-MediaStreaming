@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">helios-media-module</string>
+    <string name="splash_name">Media App</string>
+
+    <!-- Main Menu Strings -->
+    <string name="main_button1">Video Live Streaming</string>
+    <string name="main_button2">Video Call</string>
+    <string name="main_button3">Video Player</string>
+    <string name="main_button4">File Transfer</string>
+    <string name="room_dialog_title">Enter room name</string>
+    <string name="room_dialog_ok">Start Call</string>
+    <string name="room_dialog_cancel">Cancel</string>
+
+    <!-- Video player Strings -->
+    <string name="hls_uri">https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8</string>
+
+</resources>
