@@ -7,11 +7,16 @@
     <string name="main_button2">Video Call</string>
     <string name="main_button3">Video Player</string>
     <string name="main_button4">File Transfer</string>
+
+    <string name="livevideostreaming_title">Enter stream URL</string>
+    <string name="livevideostreaming_message">To start the video streaming it is necessary to introduce the RTMP URL</string>
     <string name="room_dialog_title">Enter room name</string>
     <string name="room_dialog_ok">Start Call</string>
-    <string name="room_dialog_cancel">Cancel</string>
+    <string name="videoplayer_title">Enter video</string>
+    <string name="videoplayer_ok">Play</string>
+    <string name="videoplayer_file">Select file</string>
 
-    <!-- Video player Strings -->
+    <string name="livevideostreaming_url">rtmp://$IP_of_server:1935/$App/$stream_name</string>
     <string name="hls_uri">https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8</string>
 
 </resources>

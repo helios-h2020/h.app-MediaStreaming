@@ -1,5 +1,5 @@
 # MediaStreaming
- 
+
 Repository for the Media Streaming Module (T3.3).
 
 ## Functionalities of the module:
@@ -94,7 +94,7 @@ To request Jenkins username and password, contact with: `carlosalberto.martinedo
 To use the dependency in `build.gradle` of the "father" project, you should specify the last version available in Nexus, related to the last Jenkins's deploy.
 For example, to declare the dependency on the videocall module and the respective version:
 
-`implementation 'eu.h2020.heliosMediastreaming.videocall:videocall:1.0.14'`
+`implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.33'`
 
 For more info review: `https://scm.atosresearch.eu/ari/helios_group/generic-issues/blob/master/multiprojectDependencies.md`
 
