@@ -4,12 +4,12 @@ Repository for the Media Streaming Module (T3.3).
 
 ## Functionalities of the module:
 ### Live Video Streaming:
-This functionality allows the user to stream the video from the device camera to the Ppersonal Storage via RTMP. To use this capability, an RTMP server is needed. To start the video streaming it is necessary to introduce the RTMP url like this: `rtmp://$IP_of_server:1935/$App/$stream_name`.
+This functionality allows the user to stream the video from the device camera to the Ppersonal Storage via RTMP. To use this capability, an RTMP server is needed. To start the video streaming it is necessary to introduce the RTMP url like this: `rtmp://$IP_of_server:1936/$App/$stream_name`.
 
 ### Video Call:
 This part of the app creates a P2P video call between two users connected to the same signalling server.
 
-For more info review: `https://scm.atosresearch.eu/ari/helios_group/mediastreaming-videocall`
+For more info review: https://github.com/helios-h2020/h.extension-MediaStreaming-VideoCall
 
 ### Video Player:
 This functionality provides a polyvalent video player built with ExoPlayer. By default, the player uses the url provided in the `values/strings.xml` file.
@@ -17,7 +17,7 @@ This functionality provides a polyvalent video player built with ExoPlayer. By d
 ### File Transfer:
 Thanks to the TUS server, a user can upload content from the mobile phone to the personal storage. The upload can be paused and resumed if needed. The default configuration is:
 
-* TUS server url: https://builder.helios-social.eu/files/
+* TUS server url: `https://builder.helios-social.eu/files/`
 
 This value can be modified in the `values/strings.xml` file.
 
@@ -30,7 +30,7 @@ each other.
 
 `MediaStreaming` depends of the projects:
 
-* https://scm.atosresearch.eu/ari/helios_group/mediastreaming-videocall
+* https://github.com/helios-h2020/h.extension-MediaStreaming-VideoCall
 
 ### How to configure the dependencies ###
 
@@ -71,7 +71,7 @@ heliosUser=username
 heliosPassword=password
 ```
 
-To request Nexus username and password, contact with: `carlosalberto.martinedo@atos.net`
+To request Nexus username and password, contact with: `jordi.hernandezv@atos.net`
 
 ### How to deploy a new version of the dependencies ###
 
@@ -87,14 +87,14 @@ Due to the need of managing the dependencies, Atos has selected additional tools
 After pushing a change to the `master` branch, the maintainer can builds the module by means of the job in the Jenkins interface. GitLab repositories are set to protect
 the `master` branch push and merge for the partner in charge of its module/project (maintainer).
 
-To request Jenkins username and password, contact with: `carlosalberto.martinedo@atos.net`
+To request Jenkins username and password, contact with: `jordi.hernandezv@atos.net`
 
 ### How to use the dependencies ###
 
 To use the dependency in `build.gradle` of the "father" project, you should specify the last version available in Nexus, related to the last Jenkins's deploy.
 For example, to declare the dependency on the videocall module and the respective version:
 
-`implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.33'`
+`implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.36'`
 
 For more info review: `https://scm.atosresearch.eu/ari/helios_group/generic-issues/blob/master/multiprojectDependencies.md`
 
