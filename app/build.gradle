@@ -40,7 +40,7 @@ dependencies {
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
 
-    implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.36'
+    implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.37'
     implementation 'eu.h2020.helios_social.modules.videoplayer:videoplayer:1.0.21'
     implementation 'eu.h2020.helios_social.modules.filetransfer:filetransfer:1.0.11'
     implementation 'eu.h2020.helios_social.modules.livevideostreaming:livevideostreaming:1.0.21'
