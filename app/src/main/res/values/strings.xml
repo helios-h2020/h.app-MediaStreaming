@@ -19,4 +19,10 @@
     <string name="livevideostreaming_url">rtmp://$IP_of_server:1935/$App/$stream_name</string>
     <string name="hls_uri">https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8</string>
 
+    <string name="signaling">https://$IP_of_server:11794</string>
+    <string name="stun">stun:$IP_of_server:3478</string>
+    <string name="turn">turn:$IP_of_server:3478</string>
+    <string name="credential_turn">user1</string>
+    <string name="user_turn">user1</string>
+
 </resources>

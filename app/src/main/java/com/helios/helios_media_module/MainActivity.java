@@ -21,6 +21,7 @@ package com.helios.helios_media_module;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -35,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -55,6 +57,13 @@ import eu.h2020.helios_social.modules.videoplayer.VideoPlayerActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private AlertDialog dialogRoomVideoCall;
+    private String TURN_URL;
+    private String TURN_user;
+    private String TURN_credential;
+    private String STUN_URL;
+    private String API_endpoint;
+
     private static final int FILE_TRANSFER_ACTIVITY_REQUEST_CODE = 1;
     private static final int REQUEST_FILE_SELECT = 2;
     private static final int ALL_PERMISSIONS_CODE = 1;
@@ -66,6 +75,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String VIDEOPLAYER_URLS_KEY = "VIDEOPLAYER_URLS_KEY";
     private static final String VIDEOPLAYER_URLS_SEPARATOR = ", ";
     private List<String> videoPlayerUrls;
+
+    private static final String TURN_URLS_KEY = "TURN_URLS_KEY";
+    private static final String TURN_URLS_SEPARATOR = ", ";
+    private List<String> turnUrls;
+    private static final String USER_URLS_KEY = "USER_URLS_KEY";
+    private static final String USER_URLS_SEPARATOR = ", ";
+    private List<String> userUrls;
+    private static final String STUN_URLS_KEY = "STUN_URLS_KEY";
+    private static final String STUN_URLS_SEPARATOR = ", ";
+    private List<String> stunUrls;
+    private static final String API_URLS_KEY = "API_URLS_KEY";
+    private static final String API_URLS_SEPARATOR = ", ";
+    private List<String> apiUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +110,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String hls_uri = sharedPref.getString(VIDEOPLAYER_URLS_KEY, getString(R.string.hls_uri));
         videoPlayerUrls = new ArrayList<>(Arrays.asList(hls_uri.split(VIDEOPLAYER_URLS_SEPARATOR)));
+
+        String turn_uri = sharedPref.getString(TURN_URLS_KEY, getString(R.string.turn));
+        turnUrls = new ArrayList<>(Arrays.asList(turn_uri.split(TURN_URLS_SEPARATOR)));
+
+        String user_uri = sharedPref.getString(USER_URLS_KEY, getString(R.string.user_turn));
+        userUrls = new ArrayList<>(Arrays.asList(user_uri.split(USER_URLS_SEPARATOR)));
+
+        String stun_uri = sharedPref.getString(STUN_URLS_KEY, getString(R.string.stun));
+        stunUrls = new ArrayList<>(Arrays.asList(stun_uri.split(STUN_URLS_SEPARATOR)));
+
+        String api_uri = sharedPref.getString(API_URLS_KEY, getString(R.string.signaling));
+        apiUrls = new ArrayList<>(Arrays.asList(api_uri.split(API_URLS_SEPARATOR)));
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -247,12 +281,194 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
 
+        builder.setNeutralButton("Settings", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                        showSettingsVideoCall();
+                    }
+                });
+        dialogRoomVideoCall = builder.create();
+        dialogRoomVideoCall.show();
+        //builder.show();
+    }
+
+    private void showSettingsVideoCall(){
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
+        builder.setTitle("Settings");
+
+        // Set up the input
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, turnUrls);
+        AutoCompleteTextView textViewTurn = new AutoCompleteTextView(this);
+        textViewTurn.setAdapter(adapter1);
+        textViewTurn.setInputType(InputType.TYPE_CLASS_TEXT);
+        if(TURN_URL != null && TURN_URL != ""){
+            textViewTurn.setText(TURN_URL);
+        }else {
+            textViewTurn.setText(R.string.turn);
+        }
+        textViewTurn.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+        TextView tTurn = new TextView(this);
+        tTurn.setText("TURN_URL" + ":");
+        layout.addView(tTurn);
+        layout.addView(textViewTurn);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, userUrls);
+        AutoCompleteTextView textViewTurnUser = new AutoCompleteTextView(this);
+        textViewTurnUser.setAdapter(adapter2);
+        textViewTurnUser.setInputType(InputType.TYPE_CLASS_TEXT);
+        if(TURN_user != null && TURN_user != ""){
+            textViewTurnUser.setText(TURN_user);
+        }else {
+            textViewTurnUser.setText(R.string.user_turn);
+        }
+        textViewTurnUser.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+        TextView tuser = new TextView(this);
+        tuser.setText("TURN user" + ":");
+        layout.addView(tuser);
+        layout.addView(textViewTurnUser);
+
+        AutoCompleteTextView textViewTurnCredential = new AutoCompleteTextView(this);
+        //textView.setAdapter(adapter);
+        textViewTurnCredential.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        if(TURN_credential != null && TURN_credential != ""){
+            textViewTurnCredential.setText(TURN_credential);
+        }else {
+            textViewTurnCredential.setText(R.string.credential_turn);
+        }
+        textViewTurnCredential.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+        TextView tpass = new TextView(this);
+        tpass.setText("TURN credential" + ":");
+        layout.addView(tpass);
+        layout.addView(textViewTurnCredential);
+
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, stunUrls);
+        AutoCompleteTextView textViewStun = new AutoCompleteTextView(this);
+        textViewStun.setAdapter(adapter3);
+        textViewStun.setInputType(InputType.TYPE_CLASS_TEXT);
+        if(STUN_URL != null && STUN_URL != ""){
+            textViewStun.setText(STUN_URL);
+        }else {
+            textViewStun.setText(R.string.stun);
+        }
+        textViewStun.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+        TextView tStun = new TextView(this);
+        tStun.setText("STUN_URL" + ":");
+        layout.addView(tStun);
+        layout.addView(textViewStun);
+
+        ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, apiUrls);
+        AutoCompleteTextView textViewApiEndpoint = new AutoCompleteTextView(this);
+        textViewApiEndpoint.setAdapter(adapter4);
+        textViewApiEndpoint.setInputType(InputType.TYPE_CLASS_TEXT);
+        if(API_endpoint != null && API_endpoint != ""){
+            textViewApiEndpoint.setText(API_endpoint);
+        }else {
+            textViewApiEndpoint.setText(R.string.signaling);
+        }
+        textViewApiEndpoint.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+        TextView tapi = new TextView(this);
+        tapi.setText("Signaling URL" + ":");
+        layout.addView(tapi);
+        layout.addView(textViewApiEndpoint);
+
+        builder.setView(layout);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            TURN_URL = textViewTurn.getText().toString();
+            TURN_user = textViewTurnUser.getText().toString();
+            TURN_credential = textViewTurnCredential.getText().toString();
+            STUN_URL = textViewStun.getText().toString();
+            API_endpoint = textViewApiEndpoint.getText().toString();
+
+
+            String turnUrl = textViewTurn.getText().toString();
+            if (!turnUrls.contains(turnUrl)) {
+                turnUrls.add(turnUrl);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(TURN_URLS_KEY, String.join(TURN_URLS_SEPARATOR, turnUrls));
+                editor.apply();
+            }
+
+            String userUrl = textViewTurnUser.getText().toString();
+            if (!userUrls.contains(userUrl)) {
+                userUrls.add(userUrl);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(USER_URLS_KEY, String.join(USER_URLS_SEPARATOR, userUrls));
+                editor.apply();
+            }
+
+            String stunUrl = textViewStun.getText().toString();
+            if (!stunUrls.contains(stunUrl)) {
+                stunUrls.add(stunUrl);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(STUN_URLS_KEY, String.join(STUN_URLS_SEPARATOR, stunUrls));
+                editor.apply();
+            }
+
+            String apiUrl = textViewApiEndpoint.getText().toString();
+            if (!apiUrls.contains(apiUrl)) {
+                apiUrls.add(apiUrl);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(API_URLS_KEY, String.join(API_URLS_SEPARATOR, apiUrls));
+                editor.apply();
+            }
+
+            dialog.dismiss();
+            dialogRoomVideoCall.show();
+        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            dialog.cancel();
+            dialogRoomVideoCall.show();
+        });
+
         builder.show();
     }
 
     public void startVideoCall(String roomName) {
         Intent videoCallIntent = new Intent(MainActivity.this, VideoCallActivity.class);
         videoCallIntent.putExtra("room_name", roomName);
+        videoCallIntent.putExtra("TURN_URL", TURN_URL);
+        videoCallIntent.putExtra("TURN_user", TURN_user);
+        videoCallIntent.putExtra("TURN_credential", TURN_credential);
+        videoCallIntent.putExtra("STUN_URL", STUN_URL);
+        videoCallIntent.putExtra("API_endpoint", API_endpoint);
+
         MainActivity.this.startActivity(videoCallIntent);
     }
 
