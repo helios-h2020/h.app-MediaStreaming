@@ -6,7 +6,9 @@ This application allows to the user to call the extensions from a GUI interface:
 
 Aspect of the MediaStreaming App
 
-<img align="center" src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/mediastreaming.png" alt="MediaStreaming App">
+<p align="center">
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/mediastreaming.png" alt="MediaStreaming App">
+</p>
 
 ## Functionalities of the module:
 
