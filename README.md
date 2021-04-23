@@ -55,7 +55,10 @@ each other.
 
 `MediaStreaming` depends of the projects:
 
+* https://github.com/helios-h2020/h.extension-MediaStreaming-LiveVideoStreaming
 * https://github.com/helios-h2020/h.extension-MediaStreaming-VideoCall
+* https://github.com/helios-h2020/h.extension-MediaStreaming-VideoPlayer
+* https://github.com/helios-h2020/h.extension-MediaStreaming-FileTransfer
 
 ### How to configure the dependencies ###
 
