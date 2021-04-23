@@ -18,6 +18,8 @@ Values for $App:
 - plane
 - p2p
 
+For more info review: https://github.com/helios-h2020/h.extension-MediaStreaming-LiveVideoStreaming
+
 ### Video Call:
 This part of the app creates a P2P video call between two users connected to the same signalling server.
 
@@ -26,12 +28,16 @@ For more info review: https://github.com/helios-h2020/h.extension-MediaStreaming
 ### Video Player:
 This functionality provides a polyvalent video player built with ExoPlayer. By default, the player uses the url provided in the `values/strings.xml` file.
 
+For more info review: https://github.com/helios-h2020/h.extension-MediaStreaming-VideoPlayer
+
 ### File Transfer:
 Thanks to the TUS server, a user can upload content from the mobile phone to the personal storage. The upload can be paused and resumed if needed. The default configuration is:
 
 * TUS server url: `https://builder.helios-social.eu/files/`
 
 This value can be modified in the `values/strings.xml` file.
+
+For more info review: https://github.com/helios-h2020/h.extension-MediaStreaming-FileTransfer
 
 ### P2P Mediastream:
 Media content is distributed between the peers but using an approach similar to Torrent: peers become content sources to optimise the distribution.
