@@ -18,7 +18,7 @@ in the next link you can find a good reference about to install an Apk in your d
 
 - Install Git in your computer: https://github.com/git-guides/install-git
 
-- Choose a directory from your computer and download with Git the code using the link of the code:
+- Choose a directory from your computer and download with Git the code using the link provided in this page:
 
 <img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/clone.PNG" alt="Download code">
 
@@ -28,12 +28,14 @@ in the next link you can find a good reference about to install an Apk in your d
 - Open Android Studio and open an existing project from the directory of your code downloaded.
 (To install Android Studio follow the next link: https://developer.android.com/studio/install)
 
-- To generate an Apk file form the code, select the Build option in the Menu Bar, select Build Bundles / Apk and select Build Apk. Once generated, you can find the file in (you can rename the file as you like):
+- To generate an Apk file from the code, select the Build option in the Menu Bar, select Build Bundles / Apk and select Build Apk. Once generated, you can find the file in (you can rename the file as you like):
 
 <img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/build.PNG" alt="Built Apk">  
 
 
 ## Functionalities of the module:
+
+This is a brief description of the modules used in the application.
 
 ### Live Video Streaming:
 This functionality allows the user to stream the video from the device camera to the Personal Storage via RTMP. To use this capability, an RTMP server is needed. To start the video streaming it is necessary to introduce the RTMP url like this: `rtmp://$IP_of_server:1936/$App/$stream_name`.
@@ -150,4 +152,37 @@ For example, to declare the dependency on the videocall module and the respectiv
 `implementation 'eu.h2020.helios_social.modules.videocall:videocall:1.0.36'`
 
 For more info review: `https://scm.atosresearch.eu/ari/helios_group/generic-issues/blob/master/multiprojectDependencies.md`
+
+### Hot to use the dependencies locally
+
+If you have modified one of the modules (and you have generated a .aar file) and you want to include this .aar as a dependency in the application whitout use Nexus dependencies:
+
+- Create libs folder inside app folder:
+
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/libs.PNG" alt="libs folder">
+
+- Open build.gradle at Project level and add flatDir{dirs 'libs'} :
+
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/libs_gradle.PNG" alt="Project build.gradle">
+
+```
+allprojects {
+   repositories {
+      jcenter()
+      flatDir {
+        dirs 'libs'
+      }
+   }
+}
+```
+
+- Open build.gradle at app level and add .aar file:
+
+```
+dependencies {
+     compile(name:'file_name', ext:'aar')
+}
+```
+
+
 
