@@ -61,6 +61,12 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     public static final String PASS_PHRASE = "1234";
     public static final String LOG_TAG = "HeliosMessagingService";
     public static final String PROTOCOL_ID = "/helios/chat/proto/0.0.1";
+    public static final String MESSAGE_PAIR_KEY_VALUE_SEPARATOR = ";";
+    public static final String VIDEOCALL_TURN_URL_KEY = "turnUrl";
+    public static final String VIDEOCALL_TURN_USER_KEY = "turnUser";
+    public static final String VIDEOCALL_TURN_CREDENTIAL_KEY = "turnCredential";
+    public static final String VIDEOCALL_STUN_URL_KEY = "stunUrl";
+    public static final String VIDEOCALL_API_ENDPOINT_KEY = "apiEndpoint";
 
     private HeliosMessagingNodejsLibp2p heliosMessagingNodejs;
     private HeliosKeyStoreManager heliosSecurityKeyStore;
@@ -118,17 +124,73 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     }
 
     private void processMediastreamingMessage(String message) {
-        String[] messageSplitted = message.split(MESSAGE_KEY_VALUE_SEPARATOR);
-        if (messageSplitted.length < 2) {
-            return;
-        }
+        boolean isCall = false;
+        int b = message.indexOf(VIDEOCALL_ROOM_KEY);
+        if (b >= 0) {   //found
+            String key_room = "";
+            String value = "";
+            String turn_url = "";
+            String turn_user = "";
+            String turn_credential="";
+            String stun_url="";
+            String api_endpoint="";
+            String[] messageSplittedKeys = message.split(MESSAGE_PAIR_KEY_VALUE_SEPARATOR);
+            for (String keyvalues : messageSplittedKeys) {
+                String[] messageSplitted = keyvalues.split(MESSAGE_KEY_VALUE_SEPARATOR);
+                if (messageSplitted.length < 2) {
+                    return;
+                }
 
-        String key = messageSplitted[0];
-        String value = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
-        if (VIDEOCALL_ROOM_KEY.equals(key)) {
-            activity.runOnUiThread(() -> activity.showDialog(key, value, () -> activity.startVideoCall(value)));
-        } else if (FILETRANSFER_URL_KEY.equals(key)) {
-            activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+                String key = messageSplitted[0];
+                if (VIDEOCALL_ROOM_KEY.equals(key)) {
+                    key_room = key;
+                    value = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+                if (VIDEOCALL_TURN_URL_KEY.equals(key)) {
+                    turn_url = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+                if (VIDEOCALL_TURN_USER_KEY.equals(key)) {
+                    turn_user = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+                if (VIDEOCALL_TURN_CREDENTIAL_KEY.equals(key)) {
+                    turn_credential = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+                if (VIDEOCALL_STUN_URL_KEY.equals(key)) {
+                    stun_url = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+                if (VIDEOCALL_API_ENDPOINT_KEY.equals(key)) {
+                    api_endpoint = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+                }
+            }
+
+            //String[] messageSplitted = message.split(MESSAGE_KEY_VALUE_SEPARATOR);
+            //if (messageSplitted.length < 2) {
+            //    return;
+            //}
+
+            //String key = messageSplitted[0];
+            //value = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+            if (VIDEOCALL_ROOM_KEY.equals(key_room)) {
+                String finalValue = value;
+                String finalKey_room = key_room;
+                String finalTurn_url = turn_url;
+                String finalTurn_user = turn_user;
+                String finalTurn_credential = turn_credential;
+                String finalStun_url = stun_url;
+                String finalApi_endpoint = api_endpoint;
+                activity.runOnUiThread(() -> activity.showDialog(finalKey_room, finalValue, () -> activity.startVideoCall(finalValue, finalTurn_url, finalTurn_user, finalTurn_credential, finalStun_url, finalApi_endpoint)));
+            }
+        }else{          //not found
+            String[] messageSplitted = message.split(MESSAGE_KEY_VALUE_SEPARATOR);
+            if (messageSplitted.length < 2) {
+                return;
+            }
+
+            String key = messageSplitted[0];
+            String value = String.join(MESSAGE_KEY_VALUE_SEPARATOR, Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
+            if (FILETRANSFER_URL_KEY.equals(key)) {
+                activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+            }
         }
     }
 

@@ -89,6 +89,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String API_URLS_SEPARATOR = ", ";
     private List<String> apiUrls;
 
+    private AutoCompleteTextView textViewTurn;
+    private AutoCompleteTextView textViewTurnUser;
+    private AutoCompleteTextView textViewTurnCredential;
+    private AutoCompleteTextView textViewStun;
+    private AutoCompleteTextView textViewApiEndpoint;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -276,8 +282,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set up the buttons
         builder.setPositiveButton(R.string.room_dialog_ok, (dialog, which) -> {
             String roomName = input.getText().toString();
-            heliosMessagingService.publishDirect(HeliosMessagingService.VIDEOCALL_ROOM_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + roomName);
-            startVideoCall(roomName);
+
+            if (TURN_URL == null) TURN_URL = "turn:$IP_of_server:3478";
+            if (TURN_user == null) TURN_user = "user1";
+            if (TURN_credential == null) TURN_credential = "user1";
+            if (STUN_URL == null) STUN_URL = "stun:$IP_of_server:3478";
+            if (API_endpoint == null) API_endpoint = "https://$IP_of_server:11794";
+
+            String messageKeys = HeliosMessagingService.VIDEOCALL_ROOM_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + roomName + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
+                    HeliosMessagingService.VIDEOCALL_TURN_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_URL + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
+                    HeliosMessagingService.VIDEOCALL_TURN_USER_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_user + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
+                    HeliosMessagingService.VIDEOCALL_TURN_CREDENTIAL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_credential + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
+                    HeliosMessagingService.VIDEOCALL_STUN_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + STUN_URL + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
+                    HeliosMessagingService.VIDEOCALL_API_ENDPOINT_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + API_endpoint;
+
+            //heliosMessagingService.publishDirect(HeliosMessagingService.VIDEOCALL_ROOM_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + roomName);
+            heliosMessagingService.publishDirect(messageKeys);
+            startVideoCall(roomName, TURN_URL, TURN_user, TURN_credential, STUN_URL, API_endpoint);
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
 
@@ -302,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set up the input
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, turnUrls);
-        AutoCompleteTextView textViewTurn = new AutoCompleteTextView(this);
+        textViewTurn = new AutoCompleteTextView(this);
         textViewTurn.setAdapter(adapter1);
         textViewTurn.setInputType(InputType.TYPE_CLASS_TEXT);
         if(TURN_URL != null && TURN_URL != ""){
@@ -322,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, userUrls);
-        AutoCompleteTextView textViewTurnUser = new AutoCompleteTextView(this);
+        textViewTurnUser = new AutoCompleteTextView(this);
         textViewTurnUser.setAdapter(adapter2);
         textViewTurnUser.setInputType(InputType.TYPE_CLASS_TEXT);
         if(TURN_user != null && TURN_user != ""){
@@ -340,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         layout.addView(tuser);
         layout.addView(textViewTurnUser);
 
-        AutoCompleteTextView textViewTurnCredential = new AutoCompleteTextView(this);
+        textViewTurnCredential = new AutoCompleteTextView(this);
         //textView.setAdapter(adapter);
         textViewTurnCredential.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         if(TURN_credential != null && TURN_credential != ""){
@@ -360,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, stunUrls);
-        AutoCompleteTextView textViewStun = new AutoCompleteTextView(this);
+        textViewStun = new AutoCompleteTextView(this);
         textViewStun.setAdapter(adapter3);
         textViewStun.setInputType(InputType.TYPE_CLASS_TEXT);
         if(STUN_URL != null && STUN_URL != ""){
@@ -380,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, apiUrls);
-        AutoCompleteTextView textViewApiEndpoint = new AutoCompleteTextView(this);
+        textViewApiEndpoint = new AutoCompleteTextView(this);
         textViewApiEndpoint.setAdapter(adapter4);
         textViewApiEndpoint.setInputType(InputType.TYPE_CLASS_TEXT);
         if(API_endpoint != null && API_endpoint != ""){
@@ -460,14 +481,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
-    public void startVideoCall(String roomName) {
+    public void startVideoCall(String roomName, String turn_url, String turn_user, String turn_credential, String stun_url, String api_endpoint) {
         Intent videoCallIntent = new Intent(MainActivity.this, VideoCallActivity.class);
         videoCallIntent.putExtra("room_name", roomName);
-        videoCallIntent.putExtra("TURN_URL", TURN_URL);
-        videoCallIntent.putExtra("TURN_user", TURN_user);
-        videoCallIntent.putExtra("TURN_credential", TURN_credential);
-        videoCallIntent.putExtra("STUN_URL", STUN_URL);
-        videoCallIntent.putExtra("API_endpoint", API_endpoint);
+        videoCallIntent.putExtra("TURN_URL", turn_url);
+        videoCallIntent.putExtra("TURN_user", turn_user);
+        videoCallIntent.putExtra("TURN_credential", turn_credential);
+        videoCallIntent.putExtra("STUN_URL", stun_url);
+        videoCallIntent.putExtra("API_endpoint", api_endpoint);
 
         MainActivity.this.startActivity(videoCallIntent);
     }
