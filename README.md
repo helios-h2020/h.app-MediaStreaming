@@ -10,19 +10,27 @@ Aspect of the MediaStreaming App
 
 ## How to Install:
 
-To install the application in your device is necessary to have generated an Apk file. To generate a new Apk file you can the next chapter (How to Develop).
+To install the application in your device is necessary to have generated an Apk file. To generate a new Apk file you can follow the guidelines on the next chapter (How to Develop).
 
 in the next link you can find a good reference about to install an Apk in your device: https://www.lifewire.com/install-apk-on-android-4177185
 
-## How to developed
+## How to Develop
 
 - Install Git in your computer: https://github.com/git-guides/install-git
 
-- Choose a directory from your computer and download the code using the link of the code:
+- Choose a directory from your computer and download with Git the code using the link of the code:
 
 <img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/clone.PNG" alt="Download code">
 
+
 `git clone https://github.com/helios-h2020/h.app-MediaStreaming.git`
+
+- Open Android Studio and open an existing project from the directory of your code downloaded.
+(To install Android Studio follow the next link: https://developer.android.com/studio/install)
+
+- From the Build option in the Menu Bar, select Build Bundles / Apk and select Build Apk. Once generated, you can find the file in (you can rename the file as you like):
+
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/build.PNG" alt="Built Apk">  
 
 
 ## Functionalities of the module:
