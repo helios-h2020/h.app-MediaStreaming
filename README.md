@@ -28,7 +28,7 @@ in the next link you can find a good reference about to install an Apk in your d
 - Open Android Studio and open an existing project from the directory of your code downloaded.
 (To install Android Studio follow the next link: https://developer.android.com/studio/install)
 
-- From the Build option in the Menu Bar, select Build Bundles / Apk and select Build Apk. Once generated, you can find the file in (you can rename the file as you like):
+- To generate an Apk file form the code, select the Build option in the Menu Bar, select Build Bundles / Apk and select Build Apk. Once generated, you can find the file in (you can rename the file as you like):
 
 <img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/build.PNG" alt="Built Apk">  
 
