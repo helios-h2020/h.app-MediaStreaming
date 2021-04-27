@@ -8,6 +8,23 @@ Aspect of the MediaStreaming App
 
 <img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/mediastreaming.png" alt="MediaStreaming App">
 
+## How to Install:
+
+To install the application in your device is necessary to have generated an Apk file. To generate a new Apk file you can the next chapter (How to Develop).
+
+in the next link you can find a good reference about to install an Apk in your device: https://www.lifewire.com/install-apk-on-android-4177185
+
+## How to developed
+
+- Install Git in your computer: https://github.com/git-guides/install-git
+
+- Choose a directory from your computer and download the code using the link of the code:
+
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/clone.PNG" alt="Download code">
+
+`git clone https://github.com/helios-h2020/h.app-MediaStreaming.git`
+
+
 ## Functionalities of the module:
 
 ### Live Video Streaming:
