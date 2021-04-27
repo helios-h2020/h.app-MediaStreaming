@@ -14,7 +14,7 @@ To install the application in your device is necessary to have generated an Apk 
 
 in the next link you can find a good reference about to install an Apk in your device: https://www.lifewire.com/install-apk-on-android-4177185
 
-## How to Develop
+## How to Develop:
 
 - Install Git in your computer: https://github.com/git-guides/install-git
 
@@ -177,6 +177,8 @@ allprojects {
 ```
 
 - Open build.gradle at app level and add .aar file:
+
+<img src="https://raw.githubusercontent.com/helios-h2020/h.app-MediaStreaming/master/doc/gradle_app.PNG" alt="app build.gradle">
 
 ```
 dependencies {
