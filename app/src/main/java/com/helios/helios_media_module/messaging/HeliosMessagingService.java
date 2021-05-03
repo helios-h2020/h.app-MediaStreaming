@@ -22,7 +22,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.helios.helios_media_module.MainActivity;
+import com.helios.helios_media_module.dto.MessageDTO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -30,8 +32,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,8 +40,8 @@ import eu.h2020.helios_social.core.messaging.HeliosIdentityInfo;
 import eu.h2020.helios_social.core.messaging.HeliosMessage;
 import eu.h2020.helios_social.core.messaging.HeliosMessageListener;
 import eu.h2020.helios_social.core.messaging.HeliosTopic;
+import eu.h2020.helios_social.core.messaging.ReliableHeliosMessagingNodejsLibp2pImpl;
 import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosEgoTag;
-import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosMessagingNodejsLibp2p;
 import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosMessagingReceiver;
 import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosNetworkAddress;
 import eu.h2020.helios_social.core.profile.HeliosProfileManager;
@@ -68,34 +68,38 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     public static final String VIDEOCALL_STUN_URL_KEY = "stunUrl";
     public static final String VIDEOCALL_API_ENDPOINT_KEY = "apiEndpoint";
 
-    private HeliosMessagingNodejsLibp2p heliosMessagingNodejs;
+    private ReliableHeliosMessagingNodejsLibp2pImpl heliosMessagingNodejs;
     private HeliosKeyStoreManager heliosSecurityKeyStore;
 
     private MainActivity activity;
+
+    private static final String MODULE_NAME_FILETRANSFER = "FileTransfer";
+    private static final String MODULE_NAME_VIDEOCALL = "VideoCall";
 
     public HeliosMessagingService(MainActivity activity) {
         this.activity = activity;
         initHeliosProfile(activity);
         initHeliosMessaging(activity);
-        initHeliosSecurity(activity);
+        //initHeliosSecurity(activity);
     }
 
     public void publishToTopic(String message) {
         try {
             heliosMessagingNodejs.publish(HELIOS_TOPIC, new HeliosMessage(message));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             Log.e(LOG_TAG, "Helios Messaging - Publish Exception: " + e.toString(), e);
         }
     }
 
-    public void publishDirect(String message) {
+    public void publishToDirect(String message) {
+        /*
         try {
             PrivateKey signingKey = heliosSecurityKeyStore.retrievePrivateKey("USER SIGNING KEY", PASS_PHRASE);
             PrivateKey decryptingKey = heliosSecurityKeyStore.retrievePrivateKey("USER DECRYPTING KEY", PASS_PHRASE);
         } catch (HeliosKeyStoreException e) {
             Log.e(LOG_TAG, "Helios Security - KeyStore Exception: " + e.toString(), e);
         }
-
+        */
         try {
             Log.i(LOG_TAG, "Helios Messaging - Publish Direct PeerId: " + heliosMessagingNodejs.getPeerId());
             Log.i(LOG_TAG, "Helios Messaging - Publish Direct EgoTags: " + heliosMessagingNodejs.getTags().size());
@@ -122,7 +126,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
         Log.i(LOG_TAG, "HeliosMessageListener - showMessage: '" + message + "' (Topic: '" + heliosTopic.getTopicName() + "')");
         processMediastreamingMessage(message);
     }
-
+/*
     private void processMediastreamingMessage(String message) {
         boolean isCall = false;
         int b = message.indexOf(VIDEOCALL_ROOM_KEY);
@@ -193,6 +197,31 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
             }
         }
     }
+*/
+    private void processMediastreamingMessage(String message) {
+        //Transform a json to java object
+        Gson gson = new Gson();
+        MessageDTO msg = gson.fromJson(message, MessageDTO.class);
+
+        if (msg.getModuleName().equals(MODULE_NAME_VIDEOCALL)){
+            String key_room = VIDEOCALL_ROOM_KEY;
+            String value = msg.getRoomName();
+            String turn_url = msg.getTurnURL();
+            String turn_user = msg.getTurnUser();
+            String turn_credential= msg.getTurnCredential();
+            String stun_url= msg.getStunURL();
+            String api_endpoint= msg.getApiEndpoint();
+
+            activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
+        }
+        if (msg.getModuleName().equals(MODULE_NAME_FILETRANSFER)){
+            String key = FILETRANSFER_URL_KEY;
+            String value = msg.getUploadURL();
+
+            activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+        }
+
+    }
 
     private void initHeliosProfile(Activity activity) {
         HeliosProfileManager heliosProfileManager = HeliosProfileManager.getInstance();
@@ -210,21 +239,26 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     }
 
     private void initHeliosMessaging(Activity activity) {
-        heliosMessagingNodejs = HeliosMessagingNodejsLibp2p.getInstance();
+        heliosMessagingNodejs = ReliableHeliosMessagingNodejsLibp2pImpl.getInstance();
         heliosMessagingNodejs.setContext(activity.getApplicationContext());
         try {
             heliosMessagingNodejs.connect(new HeliosConnectionInfo(), new HeliosIdentityInfo(HeliosUserData.getInstance().getValue(USERNAME),
                     HeliosUserData.getInstance().getValue(USER_ID)));
 
-            // heliosMessagingNodejs.subscribe(HELIOS_TOPIC, this);
+            Log.e(LOG_TAG, "Is connected " + heliosMessagingNodejs.isConnected());
+            boolean connected = heliosMessagingNodejs.isConnected();
+            heliosMessagingNodejs.subscribe(HELIOS_TOPIC, this);
 
-            heliosMessagingNodejs.announceTag(TOPIC);
-            heliosMessagingNodejs.observeTag(TOPIC);
+            //heliosMessagingNodejs.announceTag(TOPIC);
+            //heliosMessagingNodejs.observeTag(TOPIC);
 
-            heliosMessagingNodejs.getDirectMessaging().addReceiver(PROTOCOL_ID, this);
-        } catch (RuntimeException e) {
-            Log.e(LOG_TAG, "Helios Messaging - Connect Exception: " + e.toString(), e);
-        }
+            //heliosMessagingNodejs.getDirectMessaging().addReceiver(PROTOCOL_ID, this);
+     //   } catch (RuntimeException | HeliosMessagingException e) {
+       //     Log.e(LOG_TAG, "Helios Messaging - Connect Exception: " + e.toString(), e);
+        //}
+    } catch (Exception e) {
+        Log.e(LOG_TAG, "Helios Messaging - Connect Exception: " + e.toString(), e);
+    }
     }
 
     private void initHeliosSecurity(Activity activity) {

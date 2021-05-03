@@ -44,15 +44,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.Gson;
+import com.helios.helios_media_module.dto.MessageDTO;
 import com.helios.helios_media_module.messaging.HeliosMessagingService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.h2020.helios_social.modules.filetransfer.FileTransferActivity;
 import eu.h2020.helios_social.modules.livevideostreaming.LiveVideoStreamingActivity;
 import eu.h2020.helios_social.modules.videocall.VideoCallActivity;
-import eu.h2020.helios_social.modules.filetransfer.FileTransferActivity;
 import eu.h2020.helios_social.modules.videoplayer.VideoPlayerActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -94,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AutoCompleteTextView textViewTurnCredential;
     private AutoCompleteTextView textViewStun;
     private AutoCompleteTextView textViewApiEndpoint;
+
+    private static final String MODULE_NAME_FILETRANSFER = "FileTransfer";
+    private static final String MODULE_NAME_VIDEOCALL = "VideoCall";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +185,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (requestCode == FILE_TRANSFER_ACTIVITY_REQUEST_CODE) {
-            heliosMessagingService.publishDirect(HeliosMessagingService.FILETRANSFER_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + data.getStringExtra("uploadURL"));
+            MessageDTO msg = new MessageDTO();
+            msg.setModuleName(MODULE_NAME_FILETRANSFER);
+            msg.setUploadURL(data.getStringExtra("uploadURL"));
+
+            Gson gson = new Gson();
+
+            //transform a java object to json
+            String messageKeys= gson.toJson(msg).toString();
+            heliosMessagingService.publishToTopic(messageKeys);
+
+            //heliosMessagingService.publishToTopic(HeliosMessagingService.FILETRANSFER_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + data.getStringExtra("uploadURL"));
         }
 
         if (requestCode == REQUEST_FILE_SELECT) {
@@ -289,15 +304,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (STUN_URL == null) STUN_URL = "stun:$IP_of_server:3478";
             if (API_endpoint == null) API_endpoint = "https://$IP_of_server:11794";
 
+            MessageDTO msg = new MessageDTO();
+            msg.setModuleName(MODULE_NAME_VIDEOCALL);
+            msg.setRoomName(roomName);
+            msg.setTurnURL(TURN_URL);
+            msg.setTurnUser(TURN_user);
+            msg.setTurnCredential(TURN_credential);
+            msg.setStunURL(STUN_URL);
+            msg.setApiEndpoint(API_endpoint);
+
+            Gson gson = new Gson();
+
+            //transform a java object to json
+            String messageKeys= gson.toJson(msg).toString();
+
+/*
             String messageKeys = HeliosMessagingService.VIDEOCALL_ROOM_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + roomName + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
                     HeliosMessagingService.VIDEOCALL_TURN_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_URL + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
                     HeliosMessagingService.VIDEOCALL_TURN_USER_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_user + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
                     HeliosMessagingService.VIDEOCALL_TURN_CREDENTIAL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + TURN_credential + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
                     HeliosMessagingService.VIDEOCALL_STUN_URL_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + STUN_URL + HeliosMessagingService.MESSAGE_PAIR_KEY_VALUE_SEPARATOR +
                     HeliosMessagingService.VIDEOCALL_API_ENDPOINT_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + API_endpoint;
-
+*/
             //heliosMessagingService.publishDirect(HeliosMessagingService.VIDEOCALL_ROOM_KEY + HeliosMessagingService.MESSAGE_KEY_VALUE_SEPARATOR + roomName);
-            heliosMessagingService.publishDirect(messageKeys);
+            heliosMessagingService.publishToTopic(messageKeys);
             startVideoCall(roomName, TURN_URL, TURN_user, TURN_credential, STUN_URL, API_endpoint);
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
