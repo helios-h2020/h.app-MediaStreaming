@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import eu.h2020.helios_social.core.messaging.HeliosConnectionInfo;
 import eu.h2020.helios_social.core.messaging.HeliosIdentityInfo;
@@ -203,7 +204,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
         Gson gson = new Gson();
         MessageDTO msg = gson.fromJson(message, MessageDTO.class);
 
-        if (msg.getModuleName().equals(MODULE_NAME_VIDEOCALL)){
+        if (msg.getNameModule().equals(MODULE_NAME_VIDEOCALL)){
             String key_room = VIDEOCALL_ROOM_KEY;
             String value = msg.getRoomName();
             String turn_url = msg.getTurnURL();
@@ -211,16 +212,36 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
             String turn_credential= msg.getTurnCredential();
             String stun_url= msg.getStunURL();
             String api_endpoint= msg.getApiEndpoint();
+            long timeMessage = msg.getTimeMillis();
 
-            activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
+            long diffInSec = differenceTimeMessaging(timeMessage);
+
+            if (diffInSec < 60){
+                activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
+            }
+
         }
-        if (msg.getModuleName().equals(MODULE_NAME_FILETRANSFER)){
+        if (msg.getNameModule().equals(MODULE_NAME_FILETRANSFER)){
             String key = FILETRANSFER_URL_KEY;
             String value = msg.getUploadURL();
+            long timeMessage = msg.getTimeMillis();
 
-            activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+            long diffInSec = differenceTimeMessaging(timeMessage);
+
+            if (diffInSec < 60) {
+                activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+            }
         }
 
+    }
+
+    private long differenceTimeMessaging(long timeMessage){
+        long timeNow = System.currentTimeMillis();
+
+        long diff = timeNow - timeMessage;
+        long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diff);
+
+        return diffInSec;
     }
 
     private void initHeliosProfile(Activity activity) {

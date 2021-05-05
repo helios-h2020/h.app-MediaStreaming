@@ -186,8 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (requestCode == FILE_TRANSFER_ACTIVITY_REQUEST_CODE) {
             MessageDTO msg = new MessageDTO();
-            msg.setModuleName(MODULE_NAME_FILETRANSFER);
+            msg.setNameModule(MODULE_NAME_FILETRANSFER);
             msg.setUploadURL(data.getStringExtra("uploadURL"));
+            msg.setTimeMillis(System.currentTimeMillis());
 
             Gson gson = new Gson();
 
@@ -305,13 +306,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (API_endpoint == null) API_endpoint = "https://$IP_of_server:11794";
 
             MessageDTO msg = new MessageDTO();
-            msg.setModuleName(MODULE_NAME_VIDEOCALL);
+            msg.setNameModule(MODULE_NAME_VIDEOCALL);
             msg.setRoomName(roomName);
             msg.setTurnURL(TURN_URL);
             msg.setTurnUser(TURN_user);
             msg.setTurnCredential(TURN_credential);
             msg.setStunURL(STUN_URL);
             msg.setApiEndpoint(API_endpoint);
+            msg.setTimeMillis(System.currentTimeMillis());
 
             Gson gson = new Gson();
 
