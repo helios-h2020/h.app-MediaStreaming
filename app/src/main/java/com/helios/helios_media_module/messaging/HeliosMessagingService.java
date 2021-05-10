@@ -221,7 +221,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (key_room != null && key_room != ""){
+            if (value != null && !value.trim().equals("")){
                 if (diffInSec < DIF_SECONDS){
                     activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
                 }
@@ -236,7 +236,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (key != null && key != "") {
+            if (value != null && !value.trim().equals("")){
                 if (diffInSec < DIF_SECONDS) {
                     activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
                 }
