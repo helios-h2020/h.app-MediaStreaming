@@ -32,6 +32,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +43,7 @@ import eu.h2020.helios_social.core.messaging.HeliosConnectionInfo;
 import eu.h2020.helios_social.core.messaging.HeliosIdentityInfo;
 import eu.h2020.helios_social.core.messaging.HeliosMessage;
 import eu.h2020.helios_social.core.messaging.HeliosMessageListener;
+import eu.h2020.helios_social.core.messaging.HeliosMessagingException;
 import eu.h2020.helios_social.core.messaging.HeliosTopic;
 import eu.h2020.helios_social.core.messaging.ReliableHeliosMessagingNodejsLibp2pImpl;
 import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosEgoTag;
@@ -68,6 +72,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     public static final String VIDEOCALL_TURN_CREDENTIAL_KEY = "turnCredential";
     public static final String VIDEOCALL_STUN_URL_KEY = "stunUrl";
     public static final String VIDEOCALL_API_ENDPOINT_KEY = "apiEndpoint";
+    public static final long DIF_SECONDS = 60;
 
     private ReliableHeliosMessagingNodejsLibp2pImpl heliosMessagingNodejs;
     private HeliosKeyStoreManager heliosSecurityKeyStore;
@@ -77,7 +82,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
     private static final String MODULE_NAME_FILETRANSFER = "FileTransfer";
     private static final String MODULE_NAME_VIDEOCALL = "VideoCall";
 
-    public HeliosMessagingService(MainActivity activity) {
+    public HeliosMessagingService(MainActivity activity) throws HeliosMessagingException {
         this.activity = activity;
         initHeliosProfile(activity);
         initHeliosMessaging(activity);
@@ -216,7 +221,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (diffInSec < 300){
+            if (diffInSec < DIF_SECONDS){
                 activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
             }
 
@@ -228,7 +233,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (diffInSec < 300) {
+            if (diffInSec < DIF_SECONDS) {
                 activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
             }
         }
@@ -259,9 +264,14 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
         }
     }
 
-    private void initHeliosMessaging(Activity activity) {
+    private void initHeliosMessaging(Activity activity) throws HeliosMessagingException {
         heliosMessagingNodejs = ReliableHeliosMessagingNodejsLibp2pImpl.getInstance();
         heliosMessagingNodejs.setContext(activity.getApplicationContext());
+
+        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = now.atZone(ZoneId.systemDefault());
+        heliosMessagingNodejs.expire(zonedDateTime);
+
         try {
             heliosMessagingNodejs.connect(new HeliosConnectionInfo(), new HeliosIdentityInfo(HeliosUserData.getInstance().getValue(USERNAME),
                     HeliosUserData.getInstance().getValue(USER_ID)));

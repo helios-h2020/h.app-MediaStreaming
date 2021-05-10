@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.h2020.helios_social.core.messaging.HeliosMessagingException;
 import eu.h2020.helios_social.modules.filetransfer.FileTransferActivity;
 import eu.h2020.helios_social.modules.livevideostreaming.LiveVideoStreamingActivity;
 import eu.h2020.helios_social.modules.videocall.VideoCallActivity;
@@ -139,7 +140,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, ALL_PERMISSIONS_CODE);
         }
 
-        heliosMessagingService = new HeliosMessagingService(this);
+        try {
+            heliosMessagingService = new HeliosMessagingService(this);
+        } catch (HeliosMessagingException e) {
+            e.printStackTrace();
+        }
 
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
