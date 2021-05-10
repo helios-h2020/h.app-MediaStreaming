@@ -221,9 +221,12 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (diffInSec < DIF_SECONDS){
-                activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
+            if (key_room != null && key_room != ""){
+                if (diffInSec < DIF_SECONDS){
+                    activity.runOnUiThread(() -> activity.showDialog(key_room, value, () -> activity.startVideoCall(value, turn_url, turn_user, turn_credential, stun_url, api_endpoint)));
+                }
             }
+
 
         }
         if (msg.getNameModule().equals(MODULE_NAME_FILETRANSFER)){
@@ -233,8 +236,10 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
 
             long diffInSec = differenceTimeMessaging(timeMessage);
 
-            if (diffInSec < DIF_SECONDS) {
-                activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+            if (key != null && key != "") {
+                if (diffInSec < DIF_SECONDS) {
+                    activity.runOnUiThread(() -> activity.showDialogWithLink(key, value));
+                }
             }
         }
 
