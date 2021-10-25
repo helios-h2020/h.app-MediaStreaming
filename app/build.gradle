@@ -45,11 +45,11 @@ dependencies {
     implementation 'eu.h2020.helios_social.modules.videoplayer:videoplayer:1.0.21'
     implementation 'eu.h2020.helios_social.modules.filetransfer:filetransfer:1.0.11'
     implementation 'eu.h2020.helios_social.modules.livevideostreaming:livevideostreaming:1.0.21'
-    implementation 'eu.h2020.helios_social.core.messaging:messaging:1.1.11'
+    implementation 'eu.h2020.helios_social.core.messaging:messaging:2.0.17'
     implementation 'eu.h2020.helios_social.core.storage:storage:1.0.40'
     implementation 'eu.h2020.helios_social.core.profile:profile:1.0.9'
     implementation 'eu.h2020.helios_social.core.security:security:1.0.3'
-    implementation 'eu.h2020.helios_social.core.messagingnodejslibp2ptest:messagingnodejslibp2ptest:1.0.15'
+    //implementation 'eu.h2020.helios_social.core.messagingnodejslibp2ptest:messagingnodejslibp2ptest:1.0.15'
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation("com.google.guava:guava:29.0-android")

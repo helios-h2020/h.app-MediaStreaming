@@ -46,16 +46,17 @@ import eu.h2020.helios_social.core.messaging.HeliosMessageListener;
 import eu.h2020.helios_social.core.messaging.HeliosMessagingException;
 import eu.h2020.helios_social.core.messaging.HeliosTopic;
 import eu.h2020.helios_social.core.messaging.ReliableHeliosMessagingNodejsLibp2pImpl;
-import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosEgoTag;
-import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosMessagingReceiver;
-import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosNetworkAddress;
+//import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosEgoTag;
+//import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosMessagingReceiver;
+//import eu.h2020.helios_social.core.messaging_nodejslibp2p.HeliosNetworkAddress;
 import eu.h2020.helios_social.core.profile.HeliosProfileManager;
 import eu.h2020.helios_social.core.profile.HeliosUserData;
 import eu.h2020.helios_social.core.security.HeliosCryptoManager;
 import eu.h2020.helios_social.core.security.HeliosKeyStoreException;
 import eu.h2020.helios_social.core.security.HeliosKeyStoreManager;
 
-public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMessageListener {
+//public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMessageListener {
+public class HeliosMessagingService implements HeliosMessageListener {
     private static final String TOPIC = "mediastreaming";
     private static final HeliosTopic HELIOS_TOPIC = new HeliosTopic(TOPIC, "h3l10sM3d14");
     private static final String USER_ID = "eu.h2020.helios_social.USER_ID";
@@ -106,6 +107,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
             Log.e(LOG_TAG, "Helios Security - KeyStore Exception: " + e.toString(), e);
         }
         */
+        /*
         try {
             Log.i(LOG_TAG, "Helios Messaging - Publish Direct PeerId: " + heliosMessagingNodejs.getPeerId());
             Log.i(LOG_TAG, "Helios Messaging - Publish Direct EgoTags: " + heliosMessagingNodejs.getTags().size());
@@ -124,6 +126,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
         } catch (RuntimeException e) {
             Log.e(LOG_TAG, "Helios Messaging - Publish Direct Exception: " + e.toString(), e);
         }
+        */
     }
 
     @Override
@@ -310,7 +313,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
             Log.e(LOG_TAG, "Helios Security - KeyStore Exception: " + e.toString(), e);
         }
     }
-
+/*
     @Override
     public void receiveMessage(HeliosNetworkAddress address, String protocolId, FileDescriptor fd) {
         Log.i(LOG_TAG, "HeliosMessagingReceiver Direct - receiveMessage FileDescriptor");
@@ -334,6 +337,7 @@ public class HeliosMessagingService implements HeliosMessagingReceiver, HeliosMe
         Log.i(LOG_TAG, "HeliosMessagingReceiver Direct - receiveMessage message: '" + message + "' (networkId: '" + address.getNetworkId() + "')");
         processMediastreamingMessage(message);
     }
+*/
 
     public void stop() {
         heliosMessagingNodejs.stop();
