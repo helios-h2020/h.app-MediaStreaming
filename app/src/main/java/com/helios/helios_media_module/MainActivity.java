@@ -101,6 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String MODULE_NAME_FILETRANSFER = "FileTransfer";
     private static final String MODULE_NAME_VIDEOCALL = "VideoCall";
 
+    private static final String FILETRANSFER_URLS_KEY = "FILETRANSFER_URLS_KEY";
+    private static final String FILETRANSFER_URLS_SEPARATOR = ", ";
+    private List<String> fileTransferUrls;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String api_uri = sharedPref.getString(API_URLS_KEY, getString(R.string.signaling));
         apiUrls = new ArrayList<>(Arrays.asList(api_uri.split(API_URLS_SEPARATOR)));
+
+        String filetransferUrls = sharedPref.getString(FILETRANSFER_URLS_KEY, getString(R.string.fileTransfer_url));
+        fileTransferUrls = new ArrayList<>(Arrays.asList(filetransferUrls.split(FILETRANSFER_URLS_SEPARATOR)));
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -173,8 +180,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             case  R.id.main_button4: {
-                Intent fileTransferIntent = new Intent(MainActivity.this, FileTransferActivity.class);
-                MainActivity.this.startActivityForResult(fileTransferIntent, FILE_TRANSFER_ACTIVITY_REQUEST_CODE);
+                showFileTransferDialog();
+                //Intent fileTransferIntent = new Intent(MainActivity.this, FileTransferActivity.class);
+                //MainActivity.this.startActivityForResult(fileTransferIntent, FILE_TRANSFER_ACTIVITY_REQUEST_CODE);
                 break;
             }
 
@@ -578,6 +586,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent videoPlayerIntent = new Intent(MainActivity.this, VideoPlayerActivity.class);
         videoPlayerIntent.putExtra("URI", videoUri);
         MainActivity.this.startActivity(videoPlayerIntent);
+    }
+
+    private void showFileTransferDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
+        builder.setTitle(R.string.filetransfer_title);
+        builder.setMessage(R.string.filetransfer_message);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, fileTransferUrls);
+        AutoCompleteTextView textView = new AutoCompleteTextView(this);
+        textView.setAdapter(adapter);
+        textView.setInputType(InputType.TYPE_CLASS_TEXT);
+        textView.setText("http://");
+        textView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
+
+        builder.setView(textView);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            String fileTransferUrl = textView.getText().toString();
+            if (!fileTransferUrls.contains(fileTransferUrl)) {
+                fileTransferUrls.add(fileTransferUrl);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(FILETRANSFER_URLS_KEY, String.join(FILETRANSFER_URLS_SEPARATOR, fileTransferUrls));
+                editor.apply();
+            }
+
+            Intent fileTransferIntent = new Intent(MainActivity.this, FileTransferActivity.class);
+            fileTransferIntent.putExtra("upload_url", fileTransferUrl);
+            MainActivity.this.startActivityForResult(fileTransferIntent, FILE_TRANSFER_ACTIVITY_REQUEST_CODE);
+        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
     @Override

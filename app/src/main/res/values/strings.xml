@@ -25,4 +25,9 @@
     <string name="credential_turn">user1</string>
     <string name="user_turn">user1</string>
 
+    <string name="fileTransfer_url">https://$domain or $IP_of_server:1080/files/</string>
+
+    <string name="filetransfer_title">Enter TUS URL</string>
+    <string name="filetransfer_message">To start the file transfer it is necessary to introduce the HTTP URL</string>
+
 </resources>
