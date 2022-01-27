@@ -38,7 +38,7 @@ in the next link you can find a good reference about to install an Apk in your d
 This is a brief description of the modules used in the application.
 
 ### Live Video Streaming:
-This functionality allows the user to stream the video from the device camera to the Personal Storage via RTMP. To use this capability, an RTMP server is needed. To start the video streaming it is necessary to introduce the RTMP url like this: `rtmp://$IP_of_server:1936/$App/$stream_name`.
+This functionality allows the user to stream the video from the device camera to the Personal Storage via RTMP. To use this capability, an RTMP server is needed. To start the video streaming it is necessary to introduce the RTMP url like this: `rtmp://$IP_of_server:1935/$App/$stream_name`.
 
 Values for $App:
 - 360
