@@ -110,7 +110,7 @@ The `build.gradle` of the project define the Nexus repository and the credential
 repositories {
         ...
         maven {
-            url "https://builder.helios-social.eu/repository/helios-repository/"
+            url "https://registry.helios.ari-imet.eu/repository/helios-repository/"
             credentials {
                 username = heliosUser
                 password = heliosPassword
